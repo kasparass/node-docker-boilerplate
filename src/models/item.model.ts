@@ -26,12 +26,7 @@ const itemModel = {
     new Promise((resolve, reject) => {
       db.query("SELECT * FROM items WHERE id = $1", [id], (err, res) => {
         if (err) return reject(err);
-        return resolve(
-          res.rows.map((item: any) => ({
-            ...item,
-            completed: item.completed === 1,
-          }))[0]
-        );
+        return resolve(res.rows[0]);
       });
     }),
 
@@ -39,9 +34,7 @@ const itemModel = {
     new Promise((resolve, reject) => {
       db.query("SELECT * FROM items", [], (err, res) => {
         if (err) return reject(err);
-        return resolve(
-          res.rows.map((item) => ({ ...item, completed: item.completed === 1 }))
-        );
+        return resolve(res.rows);
       });
     }),
 
@@ -49,7 +42,7 @@ const itemModel = {
     new Promise((resolve, reject) => {
       db.query(
         "INSERT INTO items (name, completed) VALUES ($1, $2) RETURNING *",
-        [item.name, item.completed ? 1 : 0],
+        [item.name, item.completed],
         (err, res) => {
           if (err) return reject(err);
           return resolve(res.rows[0]);
@@ -61,7 +54,7 @@ const itemModel = {
     new Promise((resolve, reject) => {
       db.query(
         "UPDATE items SET name = $1, completed = $2 WHERE id = $3 RETURNING *",
-        [item.name, item.completed ? 1 : 0, id],
+        [item.name, item.completed, id],
         (err, res) => {
           if (err) return reject(err);
           return resolve(res.rows[0]);
@@ -73,7 +66,7 @@ const itemModel = {
     new Promise((resolve, reject) => {
       db.query("DELETE FROM items WHERE id = $1", [id], (err, res) => {
         if (err) return reject(err);
-        return resolve(res.rows);
+        return resolve(true);
       });
     }),
 };
