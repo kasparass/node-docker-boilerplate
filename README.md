@@ -4,7 +4,7 @@
 
 ### Building the image
 
-`docker compose build`
+`docker build -t node-docker-boilerplate .`
 
 ### Starting server
 
